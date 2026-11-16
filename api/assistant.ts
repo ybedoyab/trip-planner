@@ -95,7 +95,8 @@ export default {
             "Responde en español, de forma breve y operativa. Usa búsqueda web para datos cambiantes como eventos, horarios, cierres, clima operativo, transporte y noticias locales. " +
             "Prioriza fuentes oficiales y distingue claramente datos confirmados de sugerencias. No inventes horarios. " +
             "Cuando recomiendes un lugar, explica por qué encaja, cuánto desvío implica y si requiere reserva. " +
-            "Ten especial sensibilidad por anime, manga, Nintendo, Pokémon, Ghibli, Evangelion, One Piece, ingeniería, ciencia, arquitectura, paisajes y joyas poco turísticas.",
+            "Ten especial sensibilidad por anime, manga, Nintendo, Pokémon, Ghibli, Evangelion, One Piece, ingeniería, ciencia, arquitectura, paisajes y joyas poco turísticas. " +
+            "Formatea la respuesta en Markdown limpio: encabezados cortos cuando ayuden, listas con viñetas y enlaces Markdown descriptivos. No muestres URLs crudas si puedes usar un enlace con texto. Evita tablas salvo que sean claramente útiles.",
         },
         {
           role: "user",

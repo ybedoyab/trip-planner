@@ -5,7 +5,7 @@ import { CalendarView } from "./components/CalendarView";
 import { DayView } from "./components/DayView";
 import { ItineraryView } from "./components/ItineraryView";
 import { ReservationsView } from "./components/ReservationsView";
-import { TravelMap } from "./components/TravelMap";
+import { DiscoveryView } from "./components/DiscoveryView";
 import { UserGate } from "./components/UserGate";
 import { itinerary } from "./data/itinerary";
 import { useTravel } from "./state/TravelProvider";
@@ -13,8 +13,10 @@ import type { Section } from "./types/travel";
 
 const AIAssistantView = lazy(() => import("./components/AIAssistantView").then((module) => ({ default: module.AIAssistantView })));
 
+const TravelMap = lazy(() => import("./components/TravelMap").then(({ TravelMap }) => ({ default: TravelMap })));
+
 export default function App() {
-  const { traveler } = useTravel();
+  const { state, traveler } = useTravel();
   const [section, setSection] = useState<Section>("today");
   const [selectedDayId, setSelectedDayId] = useState(itinerary[0].id);
 
@@ -23,7 +25,7 @@ export default function App() {
     [selectedDayId],
   );
 
-  if (!traveler) return <UserGate />;
+  if (!traveler || !state.progress[traveler].preferences) return <UserGate key={traveler ?? "selection"} />;
 
   const openDay = (dayId: string) => {
     setSelectedDayId(dayId);
@@ -31,8 +33,22 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const changeSection = (next: Section) => {
+    setSection(next);
+    window.scrollTo(0, 0);
+  };
+
   const content = (() => {
     switch (section) {
+      case "explore":
+      case "saved":
+        return <DiscoveryView day={itinerary[selectedIndex]} saved={section === "saved"}
+          onSelectDay={setSelectedDayId} onOpenSaved={() => changeSection("saved")} />;
+      case "more":
+        return <section className="journey"><h1>Más del viaje</h1><div className="journey-actions">
+          {([["calendar", "Calendario"], ["map", "Mapa y vuelos"], ["ai", "Concierge IA"], ["budget", "Presupuesto"], ["reservations", "Reservas"]] as const)
+            .map(([id, label]) => <button key={id} onClick={() => changeSection(id)}>{label}</button>)}
+        </div></section>;
       case "itinerary":
         return <ItineraryView days={itinerary} onOpenDay={openDay} />;
       case "calendar":
@@ -48,7 +64,7 @@ export default function App() {
               </div>
             </header>
             <div className="map-layout">
-              <TravelMap days={itinerary} onOpenDay={openDay} />
+              <Suspense fallback={<p>Cargando mapa…</p>}><TravelMap days={itinerary} onOpenDay={openDay} /></Suspense>
               <aside className="map-aside">
                 <span className="eyebrow">Ruta maestra</span>
                 <h2>Japón + ruta aérea + fotos</h2>
@@ -67,6 +83,7 @@ export default function App() {
         return (
           <DayView
             day={itinerary[selectedIndex]}
+            onExplore={() => changeSection("explore")}
             nextDay={itinerary[selectedIndex + 1]}
             onNext={
               itinerary[selectedIndex + 1]
@@ -79,7 +96,7 @@ export default function App() {
   })();
 
   return (
-    <AppShell section={section} onSectionChange={setSection}>
+    <AppShell section={section} onSectionChange={changeSection}>
       {content}
     </AppShell>
   );

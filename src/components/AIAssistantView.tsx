@@ -1,5 +1,6 @@
 import { Bot, LoaderCircle, Search, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
+import { discoveries } from "../data/discovery";
 import { useTravel } from "../state/TravelProvider";
 import type { DayPlan } from "../types/travel";
 import { MarkdownContent } from "./MarkdownContent";
@@ -14,7 +15,7 @@ const quickQuestions = [
 ];
 
 export function AIAssistantView({ day }: Props) {
-  const { traveler } = useTravel();
+  const { traveler, state } = useTravel();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,11 @@ export function AIAssistantView({ day }: Props) {
     if (!clean || loading) return;
     setQuestion(clean); setLoading(true); setError("");
 
+    const progress = traveler ? state.progress[traveler] : undefined;
+    const saved = discoveries.filter((item) => progress?.decisions?.[item.id] === "saved")
+      .sort((a, b) => Number(b.dayId === day.id) - Number(a.dayId === day.id))
+      .slice(0, 15).map((item) => item.dayId + " · " + item.title);
+
     try {
       const response = await fetch("/api/assistant", {
         method: "POST",
@@ -33,6 +39,8 @@ export function AIAssistantView({ day }: Props) {
         body: JSON.stringify({
           question: clean,
           traveler,
+          preferences: progress?.preferences,
+          saved,
           day: {
             date: day.date, city: day.city, region: day.region, title: day.title, summary: day.summary,
             activities: day.activities.map(({ title, time }) => ({ title, time })),

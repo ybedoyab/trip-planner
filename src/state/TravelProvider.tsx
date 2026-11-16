@@ -2,7 +2,12 @@ import { createContext, useContext, useEffect, useMemo, useState, type PropsWith
 import { travelStorage } from "../lib/storage";
 import type { PersistedTravelState, Traveler } from "../types/travel";
 
+import type { Category, Decision } from "../data/discovery";
+
 interface TravelContextValue {
+  finishOnboarding: (preferences: Category[]) => void;
+  decide: (id: string, decision: Decision | null) => void;
+  undoDecision: () => void;
   state: PersistedTravelState;
   traveler: Traveler | null;
   selectTraveler: (traveler: Traveler) => void;
@@ -44,6 +49,17 @@ export function TravelProvider({ children }: PropsWithChildren) {
     traveler,
     selectTraveler: (selected) => setState((current) => ({ ...current, currentTraveler: selected })),
     clearTraveler: () => setState((current) => ({ ...current, currentTraveler: null })),
+    finishOnboarding: (preferences) => updateTravelerProgress((progress) => ({ ...progress, preferences })),
+    decide: (id, decision) => updateTravelerProgress((progress) => ({
+      ...progress,
+      decisions: { ...progress.decisions, [id]: decision },
+      lastDecision: { id, previous: progress.decisions?.[id] ?? null },
+    })),
+    undoDecision: () => updateTravelerProgress((progress) => {
+      const last = progress.lastDecision;
+      if (!last) return progress;
+      return { ...progress, lastDecision: undefined, decisions: { ...progress.decisions, [last.id]: last.previous } };
+    }),
     toggleActivity: (activityId) =>
       updateTravelerProgress((progress) => ({
         ...progress,

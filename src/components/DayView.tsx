@@ -1,5 +1,6 @@
 import { Check, Clock3, ExternalLink, Hotel, Lightbulb, MapPin, ShoppingBag, ShoppingCart, Soup, TrainFront, Utensils } from "lucide-react";
 import { galleriesByDay } from "../data/galleries";
+import { heroPhotos } from "../data/heroPhotos";
 import { extrasByDay } from "../data/dayExtras";
 import { specialStopsByDay } from "../data/specialStops";
 import { estimateCop, formatDateLabel, formatJpy } from "../lib/format";
@@ -12,10 +13,11 @@ import { QuickLinks } from "./QuickLinks";
 interface Props {
   day: DayPlan;
   nextDay?: DayPlan;
+  onExplore: () => void;
   onNext?: () => void;
 }
 
-export function DayView({ day, nextDay, onNext }: Props) {
+export function DayView({ day, nextDay, onNext, onExplore }: Props) {
   const { state, traveler, toggleActivity, completeDay } = useTravel();
   if (!traveler) return null;
 
@@ -25,8 +27,7 @@ export function DayView({ day, nextDay, onNext }: Props) {
   const percent = Math.round((completed / Math.max(activities.length, 1)) * 100);
   const transportBudget = day.transport.reduce((sum, item) => sum + (item.costJpy ?? 0), 0);
   const extra = extrasByDay[day.id];
-  const gallery = extra?.gallery?.length ? extra.gallery : (galleriesByDay[day.id] ?? []);
-  const heroImage = gallery[0]?.url ?? day.imageUrl;
+  const gallery = heroPhotos[day.id] ?? [...(extra?.gallery ?? []), ...(galleriesByDay[day.id] ?? [])];
 
   return (
     <>
@@ -39,33 +40,16 @@ export function DayView({ day, nextDay, onNext }: Props) {
         <span className="status-pill">{percent}% completado</span>
       </header>
 
-      <section className="day-hero">
-        <img
-          className="day-hero-media"
-          src={heroImage}
-          alt={gallery[0]?.alt ?? day.title}
-          onError={(event) => {
-            if (event.currentTarget.src !== day.imageUrl) event.currentTarget.src = day.imageUrl;
-          }}
-        />
-        <div>
-          <span className="status-pill">{day.date}</span>
+      <PhotoCarousel key={day.id} images={gallery.slice(0, 4)}>
+        <div className="hero-story">
           <h2>{day.title}</h2>
           <p>{day.summary}</p>
         </div>
-      </section>
+      </PhotoCarousel>
 
-      {gallery.length > 0 && (
-        <section className="section-block">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">Fotos verificadas</span>
-              <h2>Así se ve realmente</h2>
-            </div>
-          </div>
-          <PhotoCarousel images={gallery} />
-        </section>
-      )}
+      <div className="journey journey-actions">
+        <button onClick={onExplore}>Explorar sugerencias de este día</button>
+      </div>
 
       <section className="stats-grid">
         <article className="stat-card">

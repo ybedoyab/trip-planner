@@ -14,6 +14,22 @@ export interface GalleryImage {
   sourceUrl?: string;
 }
 
+export interface TravelSuggestion {
+  title: string;
+  description: string;
+  priceHint?: string;
+  mapsUrl?: string;
+  sourceUrl?: string;
+}
+
+export interface DayExtra {
+  food: TravelSuggestion[];
+  shopping: TravelSuggestion[];
+  dining: TravelSuggestion[];
+  gallery: GalleryImage[];
+  note?: string;
+}
+
 export interface Activity {
   id: string;
   time: string;

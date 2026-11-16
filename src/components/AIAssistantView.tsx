@@ -2,6 +2,7 @@ import { Bot, LoaderCircle, Search, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTravel } from "../state/TravelProvider";
 import type { DayPlan } from "../types/travel";
+import { MarkdownContent } from "./MarkdownContent";
 
 interface Props { day: DayPlan; }
 
@@ -76,7 +77,7 @@ export function AIAssistantView({ day }: Props) {
         </button>
       </section>
       {error && <div className="operation-note danger">{error}</div>}
-      {answer && <section className="ai-answer"><span className="eyebrow">Respuesta contextual</span><p>{answer}</p></section>}
+      {answer && <section className="ai-answer"><span className="eyebrow">Respuesta contextual</span><MarkdownContent>{answer}</MarkdownContent></section>}
       <div className="operation-note">La IA puede equivocarse. Para trenes, vuelos, reservas y aperturas críticas, abre siempre el enlace oficial antes de pagar o desplazarte.</div>
     </>
   );

@@ -1,5 +1,4 @@
-import { useMemo, useState } from "react";
-import { AIAssistantView } from "./components/AIAssistantView";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { AppShell } from "./components/AppShell";
 import { BudgetView } from "./components/BudgetView";
 import { CalendarView } from "./components/CalendarView";
@@ -11,6 +10,8 @@ import { UserGate } from "./components/UserGate";
 import { itinerary } from "./data/itinerary";
 import { useTravel } from "./state/TravelProvider";
 import type { Section } from "./types/travel";
+
+const AIAssistantView = lazy(() => import("./components/AIAssistantView").then((module) => ({ default: module.AIAssistantView })));
 
 export default function App() {
   const { traveler } = useTravel();
@@ -57,7 +58,7 @@ export default function App() {
           </>
         );
       case "ai":
-        return <AIAssistantView day={itinerary[selectedIndex]} />;
+        return <Suspense fallback={<div className="operation-note">Cargando Japan Companion…</div>}><AIAssistantView day={itinerary[selectedIndex]} /></Suspense>;
       case "budget":
         return <BudgetView days={itinerary} />;
       case "reservations":

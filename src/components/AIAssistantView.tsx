@@ -1,5 +1,6 @@
 import { Bot, LoaderCircle, Search, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
+import { discoveries } from "../data/discovery";
 import { useTravel } from "../state/TravelProvider";
 import type { DayPlan } from "../types/travel";
 import { MarkdownContent } from "./MarkdownContent";
@@ -14,7 +15,7 @@ const quickQuestions = [
 ];
 
 export function AIAssistantView({ day }: Props) {
-  const { traveler } = useTravel();
+  const { traveler, state } = useTravel();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,14 @@ export function AIAssistantView({ day }: Props) {
   async function ask(prompt = question) {
     const clean = prompt.trim();
     if (!clean || loading) return;
-    setQuestion(clean); setLoading(true); setError("");
+    setQuestion(clean);
+    setLoading(true);
+    setError("");
+
+    const progress = traveler ? state.progress[traveler] : undefined;
+    const saved = discoveries.filter((item) => progress?.decisions?.[item.id] === "saved")
+      .sort((a, b) => Number(b.dayId === day.id) - Number(a.dayId === day.id))
+      .slice(0, 15).map((item) => item.dayId + " · " + item.title);
 
     try {
       const response = await fetch("/api/assistant", {
@@ -33,6 +41,8 @@ export function AIAssistantView({ day }: Props) {
         body: JSON.stringify({
           question: clean,
           traveler,
+          preferences: progress?.preferences,
+          saved,
           day: {
             date: day.date, city: day.city, region: day.region, title: day.title, summary: day.summary,
             activities: day.activities.map(({ title, time }) => ({ title, time })),
@@ -48,7 +58,9 @@ export function AIAssistantView({ day }: Props) {
       if (!response.ok) throw new Error(data.error || `Error consultando IA (HTTP ${response.status}).`);
       setAnswer(data.answer || "No recibí una respuesta.");
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Error inesperado.");
+      setError(requestError instanceof TypeError
+        ? "No se pudo conectar con el concierge. Revisa tu conexión y vuelve a intentar."
+        : requestError instanceof Error ? requestError.message : "Ocurrió un error al consultar al concierge.");
     } finally {
       setLoading(false);
     }

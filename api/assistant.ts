@@ -5,6 +5,8 @@ const buckets = new Map<string, { count: number; resetAt: number }>();
 type AssistantPayload = {
   question?: string;
   traveler?: string;
+  preferences?: string[];
+  saved?: string[];
   day?: {
     date?: string;
     city?: string;
@@ -84,6 +86,10 @@ export default {
         : "",
     ].filter(Boolean).join("\n");
 
+    const list = (value: unknown) => Array.isArray(value)
+      ? value.filter((item): item is string => typeof item === "string").slice(0, 15).map((item) => item.slice(0, 160)).join(", ")
+      : "";
+
     const payload = {
       model: "gpt-6-luna",
       tools: [{ type: "web_search" }],
@@ -100,7 +106,7 @@ export default {
         },
         {
           role: "user",
-          content: `Viajero: ${body.traveler ?? "Yulian/Daniel"}\n${itineraryContext}\n\nConsulta: ${question}`,
+          content: `Viajero: ${body.traveler ?? "Yulian/Daniel"}\n${itineraryContext}\nPreferencias: ${list(body.preferences)}\nIdeas guardadas (opcionales): ${list(body.saved)}\n\nConsulta: ${question}`,
         },
       ],
     };

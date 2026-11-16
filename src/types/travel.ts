@@ -1,5 +1,5 @@
 export type Traveler = "Yulian" | "Daniel";
-export type Section = "today" | "itinerary" | "calendar" | "map" | "ai" | "budget" | "reservations";
+export type Section = "explore" | "saved" | "more" | "today" | "itinerary" | "calendar" | "map" | "ai" | "budget" | "reservations";
 
 export interface Coordinates {
   lat: number;
@@ -91,6 +91,9 @@ export interface ReservationItem {
 }
 
 export interface TravelerProgress {
+  preferences?: import("../data/discovery").Category[];
+  decisions?: Record<string, import("../data/discovery").Decision | null>;
+  lastDecision?: { id: string; previous: import("../data/discovery").Decision | null };
   completedActivities: Record<string, boolean>;
   completedDays: Record<string, boolean>;
   completedReservations: Record<string, boolean>;

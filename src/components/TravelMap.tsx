@@ -77,6 +77,11 @@ export function TravelMap({ days, onOpenDay }: Props) {
       </MapContainer>
 
       <div className="map-context">
+        {mode === "flights" && <ol className="flight-stops">
+          {flightStops.map((stop) => <li key={stop.id}>
+            <strong>{stop.name}</strong><span>{stop.subtitle}</span><small>{stop.note}</small>
+          </li>)}
+        </ol>}
         {mode === "flights" && <p><strong>Ida confirmada:</strong> MDE → BOG → MAD → PEK → KIX. Madrid: 12 h 55 min de escala. Beijing: 2 h 20 min.</p>}
         {mode === "photos" && <p><strong>Photo map:</strong> pines seleccionados por valor fotográfico y cercanía a la ruta. Cada popup tiene acceso directo a Google Maps.</p>}
         {mode === "japan" && <p><strong>Ruta terrestre:</strong> rojo = ruta base; azul = extensión norte opcional después de Año Nuevo.</p>}

@@ -1,64 +1,33 @@
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, type PropsWithChildren } from "react";
+import { useHorizontalSwipe } from "../lib/useHorizontalSwipe";
 import type { GalleryImage } from "../types/travel";
 
-interface Props {
-  images: GalleryImage[];
-}
-
-export function PhotoCarousel({ images }: Props) {
+export function PhotoCarousel({ images, children }: PropsWithChildren<{ images: GalleryImage[] }>) {
   const [index, setIndex] = useState(0);
-  if (!images.length) return null;
+  const [failed, setFailed] = useState<string[]>([]);
+  const available = images.filter((image) => !failed.includes(image.url));
+  const position = Math.min(index, available.length - 1);
+  const current = available[position];
+  const go = (direction: number) => {
+    if (available.length > 1) setIndex((position + direction + available.length) % available.length);
+  };
+  const swipe = useHorizontalSwipe((direction) => go(-direction));
 
-  const current = images[index];
-  const go = (direction: number) =>
-    setIndex((currentIndex) => (currentIndex + direction + images.length) % images.length);
-
-  return (
-    <section className="photo-carousel">
-      <div className="photo-stage">
-        <img
-          src={current.url}
-          alt={current.alt}
-          loading="lazy"
-          onError={(event) => {
-            event.currentTarget.style.display = "none";
-          }}
-        />
-        {images.length > 1 && (
-          <>
-            <button className="carousel-arrow left" onClick={() => go(-1)} aria-label="Foto anterior">
-              <ChevronLeft />
-            </button>
-            <button className="carousel-arrow right" onClick={() => go(1)} aria-label="Foto siguiente">
-              <ChevronRight />
-            </button>
-          </>
-        )}
-        <div className="photo-caption">
-          <div>
-            <strong>{current.title}</strong>
-            <small>{current.credit}</small>
-          </div>
-          {current.sourceUrl && (
-            <a href={current.sourceUrl} target="_blank" rel="noreferrer">
-              Fuente <ExternalLink size={13} />
-            </a>
-          )}
-        </div>
-      </div>
-      {images.length > 1 && (
-        <div className="carousel-dots">
-          {images.map((image, imageIndex) => (
-            <button
-              key={image.url}
-              className={imageIndex === index ? "active" : ""}
-              onClick={() => setIndex(imageIndex)}
-              aria-label={`Ver foto ${imageIndex + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </section>
-  );
+  return <section className="day-hero journey-hero" aria-label="Resumen y fotografías del día" {...swipe}>
+    {current && <img key={current.url} className="day-hero-media"
+      src={current.url} alt={current.alt} draggable={false}
+      onError={() => setFailed((previous) => [...previous, current.url])} />}
+    {available.length > 1 && <div className="hero-controls">
+      <button onClick={() => go(-1)} aria-label="Foto anterior"><ChevronLeft /></button>
+      <span aria-live="polite">{position + 1} / {available.length}</span>
+      <button onClick={() => go(1)} aria-label="Foto siguiente"><ChevronRight /></button>
+    </div>}
+    <div className="hero-copy">
+      {children}
+      {current && <small>{current.title} · {current.sourceUrl
+        ? <a href={current.sourceUrl} target="_blank" rel="noreferrer">{current.credit}</a>
+        : current.credit}</small>}
+    </div>
+  </section>;
 }

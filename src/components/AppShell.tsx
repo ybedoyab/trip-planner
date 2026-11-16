@@ -1,4 +1,4 @@
-import { Bot, CalendarDays, CalendarRange, Map, ReceiptJapaneseYen, Route, TicketCheck } from "lucide-react";
+import { Bookmark, Compass, Ellipsis, Bot, CalendarDays, CalendarRange, Map, ReceiptJapaneseYen, Route, TicketCheck } from "lucide-react";
 import type { PropsWithChildren } from "react";
 import { useTravel } from "../state/TravelProvider";
 import type { Section } from "../types/travel";
@@ -11,6 +11,8 @@ interface Props extends PropsWithChildren {
 const items: Array<{ id: Section; label: string; icon: typeof CalendarDays }> = [
   { id: "today", label: "Hoy", icon: CalendarDays },
   { id: "itinerary", label: "Ruta", icon: Route },
+  { id: "explore", label: "Explorar", icon: Compass },
+  { id: "saved", label: "Guardados", icon: Bookmark },
   { id: "calendar", label: "Calendario", icon: CalendarRange },
   { id: "map", label: "Mapa", icon: Map },
   { id: "ai", label: "IA", icon: Bot },
@@ -23,8 +25,10 @@ export function AppShell({ section, onSectionChange, children }: Props) {
 
   const nav = (mobile = false) => (
     <nav className={mobile ? "mobile-nav" : "side-nav"}>
-      {items.map(({ id, label, icon: Icon }) => (
-        <button key={id} className={section === id ? "active" : ""} onClick={() => onSectionChange(id)}>
+      {(mobile
+        ? [...items.slice(0, 4), { id: "more" as const, label: "Más", icon: Ellipsis }]
+        : items).map(({ id, label, icon: Icon }) => (
+        <button key={id} aria-current={section === id ? "page" : undefined} className={section === id ? "active" : ""} onClick={() => onSectionChange(id)}>
           <Icon size={18} />
           <span>{label}</span>
         </button>

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { AIAssistantView } from "./components/AIAssistantView";
 import { AppShell } from "./components/AppShell";
 import { BudgetView } from "./components/BudgetView";
+import { CalendarView } from "./components/CalendarView";
 import { DayView } from "./components/DayView";
 import { ItineraryView } from "./components/ItineraryView";
 import { ReservationsView } from "./components/ReservationsView";
@@ -33,22 +34,24 @@ export default function App() {
     switch (section) {
       case "itinerary":
         return <ItineraryView days={itinerary} onOpenDay={openDay} />;
+      case "calendar":
+        return <CalendarView days={itinerary} onOpenDay={openDay} />;
       case "map":
         return (
           <>
             <header className="page-header">
               <div>
                 <span className="eyebrow">Mapa interactivo</span>
-                <h1>Japón, punto por punto</h1>
-                <p>Toca una parada para ver la fecha y abrir el día. Azul = extensión norte opcional.</p>
+                <h1>Rutas y puntos fotográficos</h1>
+                <p>Cambia entre Japón, vuelos internacionales y photo spots. Beijing (PEK) aparece explícitamente en la ruta aérea.</p>
               </div>
             </header>
             <div className="map-layout">
               <TravelMap days={itinerary} onOpenDay={openDay} />
               <aside className="map-aside">
                 <span className="eyebrow">Ruta maestra</span>
-                <h2>Kansai → Kyūshū → Tokyo → norte</h2>
-                <p>La ruta evita volver innecesariamente hacia el oeste. Los marcadores azules son la extensión después de Año Nuevo.</p>
+                <h2>Japón + ruta aérea + fotos</h2>
+                <p>Usa las pestañas del mapa. La capa Vuelos muestra MDE → BOG → MAD → PEK → KIX; Fotos incluye enlaces directos para navegación.</p>
               </aside>
             </div>
           </>

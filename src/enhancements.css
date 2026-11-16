@@ -452,3 +452,67 @@ button.calendar-cell { cursor: pointer; }
   .calendar-weekdays, .calendar-grid { min-width: 620px; }
   .calendar-cell { min-height: 92px; }
 }
+
+
+.markdown-content { margin-top: 10px; color: #dce6ed; line-height: 1.72; }
+.markdown-content > :first-child { margin-top: 0; }
+.markdown-content > :last-child { margin-bottom: 0; }
+.markdown-content p { margin: 10px 0; color: #dce6ed; }
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  color: #fff; margin: 18px 0 8px; line-height: 1.2; letter-spacing: -.015em;
+}
+.markdown-content h1 { font-size: 22px; }
+.markdown-content h2 { font-size: 18px; color: var(--gold); }
+.markdown-content h3 { font-size: 15px; }
+.markdown-content ul, .markdown-content ol { margin: 9px 0; padding-left: 22px; }
+.markdown-content li { margin: 6px 0; }
+.markdown-content strong { color: #fff; }
+.markdown-content a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+.markdown-content code { background: rgba(255,255,255,.07); padding: 2px 5px; border-radius: 5px; }
+.markdown-content blockquote { margin: 12px 0; padding: 8px 12px; border-left: 3px solid var(--gold); background: rgba(243,198,107,.06); color: var(--muted); }
+.markdown-content hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+
+.suggestion-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+}
+.suggestion-panel {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 15px;
+  background: linear-gradient(180deg, #111c25, #0c151c);
+  min-width: 0;
+}
+.suggestion-panel-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.suggestion-panel-title > svg { color: var(--gold); }
+.suggestion-panel-title h3 { margin: 2px 0 0; font-size: 16px; }
+.suggestion-list { display: grid; gap: 10px; }
+.suggestion-item {
+  padding: 11px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.055);
+}
+.suggestion-item > div:first-child { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
+.suggestion-item strong { font-size: 13px; }
+.suggestion-item p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.price-hint { color: var(--green); font-size: 11px; white-space: nowrap; }
+.suggestion-item a, .suggestion-actions a {
+  color: var(--blue); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; margin-top: 7px;
+}
+.suggestion-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.suggestion-note { margin-top: 0; margin-bottom: 12px; border-left-color: var(--blue); }
+.day-hero { background-color: #111c25; }
+.day-hero::before {
+  content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(4,8,12,.20), rgba(4,8,12,.02)); pointer-events: none;
+}
+
+@media (max-width: 1050px) {
+  .suggestion-columns { grid-template-columns: 1fr 1fr; }
+  .dining-panel { grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  .suggestion-columns { grid-template-columns: 1fr; }
+  .dining-panel { grid-column: auto; }
+}

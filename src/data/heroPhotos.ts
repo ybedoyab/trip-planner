@@ -2,7 +2,7 @@ import type { GalleryImage } from "../types/travel";
 
 export const heroPhotos: Record<string, GalleryImage[]> = {
   "2027-01-04": [{
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Bankei_ski01.JPG/960px-Bankei_ski01.JPG",
+    url: "/photos/sapporo-bankei.jpg",
     title: "Sapporo Bankei",
     alt: "Vista de la estación de esquí de Sapporo Bankei",
     credit: "221.20 · dominio público",
@@ -131,3 +131,4 @@ export const heroPhotos: Record<string, GalleryImage[]> = {
     }
   ]
 };
+

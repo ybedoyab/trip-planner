@@ -1,5 +1,6 @@
-import { Check, Clock3, ExternalLink, Hotel, Lightbulb, ShoppingCart, TrainFront } from "lucide-react";
+import { Check, Clock3, ExternalLink, Hotel, Lightbulb, MapPin, ShoppingBag, ShoppingCart, Soup, TrainFront, Utensils } from "lucide-react";
 import { galleriesByDay } from "../data/galleries";
+import { extrasByDay } from "../data/dayExtras";
 import { specialStopsByDay } from "../data/specialStops";
 import { estimateCop, formatDateLabel, formatJpy } from "../lib/format";
 import { getTransportAdvice } from "../lib/transportAdvice";
@@ -23,7 +24,9 @@ export function DayView({ day, nextDay, onNext }: Props) {
   const completed = activities.filter((item) => progress.completedActivities[item.id]).length;
   const percent = Math.round((completed / Math.max(activities.length, 1)) * 100);
   const transportBudget = day.transport.reduce((sum, item) => sum + (item.costJpy ?? 0), 0);
-  const gallery = galleriesByDay[day.id] ?? [];
+  const extra = extrasByDay[day.id];
+  const gallery = extra?.gallery?.length ? extra.gallery : (galleriesByDay[day.id] ?? []);
+  const heroImage = gallery[0]?.url ?? day.imageUrl;
 
   return (
     <>
@@ -36,7 +39,15 @@ export function DayView({ day, nextDay, onNext }: Props) {
         <span className="status-pill">{percent}% completado</span>
       </header>
 
-      <section className="day-hero" style={{ backgroundImage: 'url("' + day.imageUrl + '")' }}>
+      <section className="day-hero">
+        <img
+          className="day-hero-media"
+          src={heroImage}
+          alt={gallery[0]?.alt ?? day.title}
+          onError={(event) => {
+            if (event.currentTarget.src !== day.imageUrl) event.currentTarget.src = day.imageUrl;
+          }}
+        />
         <div>
           <span className="status-pill">{day.date}</span>
           <h2>{day.title}</h2>
@@ -123,6 +134,68 @@ export function DayView({ day, nextDay, onNext }: Props) {
           Día completado
         </button>
       </section>
+
+
+      {extra && (
+        <section className="section-block">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">Ideas opcionales</span>
+              <h2>Qué comer, qué comprar y dónde probarlo</h2>
+            </div>
+            <span className="mini-pill">ustedes deciden</span>
+          </div>
+
+          {extra.note && <div className="operation-note suggestion-note">{extra.note}</div>}
+
+          <div className="suggestion-columns">
+            <article className="suggestion-panel">
+              <div className="suggestion-panel-title"><Soup size={18} /><div><span className="eyebrow">Comer</span><h3>Qué probar</h3></div></div>
+              <div className="suggestion-list">
+                {extra.food.map((item) => (
+                  <div className="suggestion-item" key={item.title}>
+                    <div><strong>{item.title}</strong>{item.priceHint && <span className="price-hint">{item.priceHint}</span>}</div>
+                    <p>{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="suggestion-panel">
+              <div className="suggestion-panel-title"><ShoppingBag size={18} /><div><span className="eyebrow">Comprar</span><h3>Qué vale la pena mirar</h3></div></div>
+              <div className="suggestion-list">
+                {extra.shopping.map((item) => (
+                  <div className="suggestion-item" key={item.title}>
+                    <div><strong>{item.title}</strong>{item.priceHint && <span className="price-hint">{item.priceHint}</span>}</div>
+                    <p>{item.description}</p>
+                    {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={12} /> Maps</a>}
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="suggestion-panel dining-panel">
+              <div className="suggestion-panel-title"><Utensils size={18} /><div><span className="eyebrow">Dónde comer</span><h3>Lugares sugeridos</h3></div></div>
+              <div className="suggestion-list">
+                {extra.dining.map((item) => (
+                  <div className="suggestion-item" key={item.title}>
+                    <div><strong>{item.title}</strong>{item.priceHint && <span className="price-hint">{item.priceHint}</span>}</div>
+                    <p>{item.description}</p>
+                    <div className="suggestion-actions">
+                      {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={12} /> Abrir en Maps</a>}
+                      {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noreferrer"><ExternalLink size={12} /> Fuente</a>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </div>
+
+          <div className="operation-note">
+            Estas son sugerencias editoriales, no reservas ni decisiones cerradas. Revisen horarios, precios y disponibilidad el mismo día.
+          </div>
+        </section>
+      )}
 
       <section className="section-block">
         <h2>Cómo llegar y cómo comprar</h2>

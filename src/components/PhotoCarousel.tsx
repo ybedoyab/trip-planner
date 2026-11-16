@@ -17,7 +17,14 @@ export function PhotoCarousel({ images }: Props) {
   return (
     <section className="photo-carousel">
       <div className="photo-stage">
-        <img src={current.url} alt={current.alt} loading="lazy" />
+        <img
+          src={current.url}
+          alt={current.alt}
+          loading="lazy"
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+          }}
+        />
         {images.length > 1 && (
           <>
             <button className="carousel-arrow left" onClick={() => go(-1)} aria-label="Foto anterior">

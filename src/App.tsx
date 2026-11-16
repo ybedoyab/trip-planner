@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { AIAssistantView } from "./components/AIAssistantView";
 import { AppShell } from "./components/AppShell";
 import { BudgetView } from "./components/BudgetView";
 import { DayView } from "./components/DayView";
@@ -52,6 +53,8 @@ export default function App() {
             </div>
           </>
         );
+      case "ai":
+        return <AIAssistantView day={itinerary[selectedIndex]} />;
       case "budget":
         return <BudgetView days={itinerary} />;
       case "reservations":

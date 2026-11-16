@@ -1,4 +1,4 @@
-import { Bot, CalendarDays, Map, ReceiptJapaneseYen, Route, TicketCheck } from "lucide-react";
+import { Bot, CalendarDays, CalendarRange, Map, ReceiptJapaneseYen, Route, TicketCheck } from "lucide-react";
 import type { PropsWithChildren } from "react";
 import { useTravel } from "../state/TravelProvider";
 import type { Section } from "../types/travel";
@@ -11,6 +11,7 @@ interface Props extends PropsWithChildren {
 const items: Array<{ id: Section; label: string; icon: typeof CalendarDays }> = [
   { id: "today", label: "Hoy", icon: CalendarDays },
   { id: "itinerary", label: "Ruta", icon: Route },
+  { id: "calendar", label: "Calendario", icon: CalendarRange },
   { id: "map", label: "Mapa", icon: Map },
   { id: "ai", label: "IA", icon: Bot },
   { id: "budget", label: "Presupuesto", icon: ReceiptJapaneseYen },

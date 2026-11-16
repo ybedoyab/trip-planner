@@ -1,5 +1,5 @@
 export type Traveler = "Yulian" | "Daniel";
-export type Section = "today" | "itinerary" | "map" | "ai" | "budget" | "reservations";
+export type Section = "today" | "itinerary" | "calendar" | "map" | "ai" | "budget" | "reservations";
 
 export interface Coordinates {
   lat: number;

@@ -1,6 +1,78 @@
 import type { GalleryImage } from "../types/travel";
 
 export const heroPhotos: Record<string, GalleryImage[]> = {
+  "2026-12-11": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Nishiki_Ichiba_by_matsuyuki.jpg/960px-Nishiki_Ichiba_by_matsuyuki.jpg",
+      "title": "Nishiki Market",
+      "alt": "Nishiki Market",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nishiki_Ichiba_by_matsuyuki.jpg"
+    }
+  ],
+  "2026-12-13": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Bamboo_Park%2C_Kyoto_Japan%3B_by_Don_Ramey_Logan.jpg/1280px-Bamboo_Park%2C_Kyoto_Japan%3B_by_Don_Ramey_Logan.jpg",
+      "title": "Bamboo Forest (Kyoto)",
+      "alt": "Bamboo Forest (Kyoto)",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bamboo_Park%2C_Kyoto_Japan%3B_by_Don_Ramey_Logan.jpg"
+    }
+  ],
+  "2026-12-15": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Logo_de_Super_Nintendo_World.png",
+      "title": "Super Nintendo World",
+      "alt": "Super Nintendo World",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Logo_de_Super_Nintendo_World.png"
+    }
+  ],
+  "2026-12-16": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Genbaku_Dome04-r.JPG/1280px-Genbaku_Dome04-r.JPG",
+      "title": "Hiroshima Peace Memorial",
+      "alt": "Hiroshima Peace Memorial",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Genbaku_Dome04-r.JPG"
+    }
+  ],
+  "2026-12-24": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/All_haneda.jpg/1280px-All_haneda.jpg",
+      "title": "Haneda Airport",
+      "alt": "Haneda Airport",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:All_haneda.jpg"
+    }
+  ],
+  "2026-12-25": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Shibuya_Crossing%2C_Aerial.jpg/1280px-Shibuya_Crossing%2C_Aerial.jpg",
+      "title": "Shibuya Crossing",
+      "alt": "Shibuya Crossing",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shibuya_Crossing%2C_Aerial.jpg"
+    }
+  ],
+  "2026-12-28": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/KawaguchiKo.jpg/1280px-KawaguchiKo.jpg",
+      "title": "Lake Kawaguchi",
+      "alt": "Lake Kawaguchi",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:KawaguchiKo.jpg"
+    }
+  ],
+  "2027-01-05": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Shinchitose.aierial_shoot.jpg/1280px-Shinchitose.aierial_shoot.jpg",
+      "title": "New Chitose Airport",
+      "alt": "New Chitose Airport",
+      "credit": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shinchitose.aierial_shoot.jpg"
+    }
+  ],
   "2026-12-06": [
     {
       "url": "https://upload.wikimedia.org/wikipedia/commons/9/96/El-dorado-from-air.jpg",

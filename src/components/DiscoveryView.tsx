@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Bookmark, RotateCcw, X } from "lucide-react";
-import { discoveries, type Decision, type DiscoveryItem } from "../data/discovery";
+import { categories, discoveries, type Decision, type DiscoveryItem } from "../data/discovery";
 import { extrasByDay } from "../data/dayExtras";
 import { itinerary } from "../data/itinerary";
 import { useTravel } from "../state/TravelProvider";
@@ -26,6 +26,7 @@ export function DiscoveryView({ day, saved, onSelectDay, onOpenSaved }: {
   const { state, traveler, decide, undoDecision } = useTravel();
   const [filter, setFilter] = useState<Decision>("saved");
   const [savedDay, setSavedDay] = useState("");
+  const [savedCategory, setSavedCategory] = useState("");
   const progress = traveler ? state.progress[traveler] : undefined;
   const decisions = progress?.decisions ?? {};
   const preferences = progress?.preferences ?? [];
@@ -36,7 +37,9 @@ export function DiscoveryView({ day, saved, onSelectDay, onOpenSaved }: {
     if (current) decide(current.id, direction > 0 ? "saved" : "dismissed");
   });
   const dayOptions = itinerary.map((option) => <option key={option.id} value={option.id}>{option.date} · {option.city}</option>);
-  const visible = discoveries.filter((item) => decisions[item.id] === filter && (!savedDay || item.dayId === savedDay));
+  const visible = discoveries.filter((item) => decisions[item.id] === filter
+    && (!savedDay || item.dayId === savedDay)
+    && (!savedCategory || item.category === savedCategory));
 
   return <section className="journey discovery">
     <header className="page-header"><div><span className="eyebrow">Japón 2026</span><h1>{saved ? "Guardados" : "Explorar"}</h1></div></header>
@@ -46,6 +49,10 @@ export function DiscoveryView({ day, saved, onSelectDay, onOpenSaved }: {
         <button aria-pressed={filter === "dismissed"} onClick={() => setFilter("dismissed")}>Descartados</button>
       </div>
       <label>Día <select value={savedDay} onChange={(event) => setSavedDay(event.target.value)}><option value="">Todos los días</option>{dayOptions}</select></label>
+      <label>Categoría <select value={savedCategory} onChange={(event) => setSavedCategory(event.target.value)}>
+        <option value="">Todas las categorías</option>
+        {categories.map((category) => <option key={category}>{category}</option>)}
+      </select></label>
       {!visible.length && <p>No hay sugerencias en esta vista.</p>}
       {visible.map((item) => <article className="discovery-card" key={item.id}>
         <small>{item.dayId}</small>

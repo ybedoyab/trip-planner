@@ -25,7 +25,9 @@ export function AIAssistantView({ day }: Props) {
   async function ask(prompt = question) {
     const clean = prompt.trim();
     if (!clean || loading) return;
-    setQuestion(clean); setLoading(true); setError("");
+    setQuestion(clean);
+    setLoading(true);
+    setError("");
 
     const progress = traveler ? state.progress[traveler] : undefined;
     const saved = discoveries.filter((item) => progress?.decisions?.[item.id] === "saved")
@@ -56,7 +58,9 @@ export function AIAssistantView({ day }: Props) {
       if (!response.ok) throw new Error(data.error || `Error consultando IA (HTTP ${response.status}).`);
       setAnswer(data.answer || "No recibí una respuesta.");
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Error inesperado.");
+      setError(requestError instanceof TypeError
+        ? "No se pudo conectar con el concierge. Revisa tu conexión y vuelve a intentar."
+        : requestError instanceof Error ? requestError.message : "Ocurrió un error al consultar al concierge.");
     } finally {
       setLoading(false);
     }

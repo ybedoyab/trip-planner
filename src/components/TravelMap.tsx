@@ -1,6 +1,6 @@
 import "leaflet/dist/leaflet.css";
 import { ExternalLink, MapPinned, Plane, Route as RouteIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CircleMarker, MapContainer, Popup, Polyline, TileLayer, useMap } from "react-leaflet";
 import type { LatLngBoundsExpression } from "leaflet";
 import type { DayPlan } from "../types/travel";
@@ -16,7 +16,7 @@ type MapMode = "japan" | "flights" | "photos";
 
 function FitBounds({ points }: { points: Array<[number, number]> }) {
   const map = useMap();
-  useMemo(() => {
+  useEffect(() => {
     if (points.length > 1) {
       map.fitBounds(points as LatLngBoundsExpression, { padding: [28, 28], maxZoom: 11 });
     }

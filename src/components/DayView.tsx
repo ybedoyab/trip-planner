@@ -39,7 +39,15 @@ export function DayView({ day, nextDay, onNext }: Props) {
         <span className="status-pill">{percent}% completado</span>
       </header>
 
-      <section className="day-hero" style={{ backgroundImage: 'url("' + heroImage + '")' }}>
+      <section className="day-hero">
+        <img
+          className="day-hero-media"
+          src={heroImage}
+          alt={gallery[0]?.alt ?? day.title}
+          onError={(event) => {
+            if (event.currentTarget.src !== day.imageUrl) event.currentTarget.src = day.imageUrl;
+          }}
+        />
         <div>
           <span className="status-pill">{day.date}</span>
           <h2>{day.title}</h2>

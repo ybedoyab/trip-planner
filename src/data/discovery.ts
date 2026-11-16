@@ -19,6 +19,22 @@ const photoStops: Record<string, string[]> = {
 };
 
 const localIdeas: Record<string, TravelSuggestion[]> = {
+  "2027-01-04": [{
+    title: "Pase y equipo para esquiar en Bankei",
+    description: "Después de dejar las maletas. Comparen el paquete nocturno con el pase y el alquiler por separado. Revisen qué incluye el paquete y confirmen los horarios de alquiler y regreso.",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Sapporo+Bankei+Ski+Area",
+    sourceUrl: "https://www.bankei.co.jp/liftprice-en/",
+  }, {
+    title: "Clase de esquí en inglés en Bankei",
+    description: "Si es su primera vez, consulten disponibilidad con la escuela. Si no pueden conseguir una clase que encaje con la llegada, dejen el esquí de iniciación para otra fecha.",
+    sourceUrl: "https://bankei-ski.com/english-lesson/",
+  }],
+  "2027-01-05": [{
+    title: "Sapporo Teine si cuentan con el día libre",
+    description: "Alternativa a Bankei si pueden dedicar un día al esquí y separar el traslado a CTS. Sustituye la visita al lago. El bus de ida y vuelta desde hoteles tiene horario fijo. Consulten también JR hasta Teine y la conexión al centro de esquí.",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Sapporo+Teine+Olympia+Ski+Center",
+    sourceUrl: "https://sapporo-teine.com/snow/lang/en/access/",
+  }],
   "2026-12-10": [{
     title: "Pausa de matcha en Byōdō-in Omotesandō",
     description: "Entre Byōdō-in y el regreso a la estación JR Uji. Haz una pausa en la calle comercial si queda margen para el siguiente tramo.",

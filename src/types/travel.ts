@@ -1,9 +1,17 @@
 export type Traveler = "Yulian" | "Daniel";
-export type Section = "today" | "itinerary" | "map" | "budget" | "reservations";
+export type Section = "today" | "itinerary" | "map" | "ai" | "budget" | "reservations";
 
 export interface Coordinates {
   lat: number;
   lng: number;
+}
+
+export interface GalleryImage {
+  url: string;
+  alt: string;
+  title: string;
+  credit: string;
+  sourceUrl?: string;
 }
 
 export interface Activity {

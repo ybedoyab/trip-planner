@@ -1,4 +1,4 @@
-import { CalendarDays, Map, ReceiptJapaneseYen, Route, TicketCheck } from "lucide-react";
+import { Bot, CalendarDays, Map, ReceiptJapaneseYen, Route, TicketCheck } from "lucide-react";
 import type { PropsWithChildren } from "react";
 import { useTravel } from "../state/TravelProvider";
 import type { Section } from "../types/travel";
@@ -12,6 +12,7 @@ const items: Array<{ id: Section; label: string; icon: typeof CalendarDays }> = 
   { id: "today", label: "Hoy", icon: CalendarDays },
   { id: "itinerary", label: "Ruta", icon: Route },
   { id: "map", label: "Mapa", icon: Map },
+  { id: "ai", label: "IA", icon: Bot },
   { id: "budget", label: "Presupuesto", icon: ReceiptJapaneseYen },
   { id: "reservations", label: "Reservas", icon: TicketCheck },
 ];
@@ -41,7 +42,7 @@ export function AppShell({ section, onSectionChange, children }: Props) {
         <strong>日本 2026</strong>
         <button onClick={clearTraveler}>{traveler}</button>
       </div>
-      <main>{children}</main>
+      <main className="page-transition" key={section}>{children}</main>
       {nav(true)}
     </div>
   );

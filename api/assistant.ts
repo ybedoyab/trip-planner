@@ -1,6 +1,3 @@
-import OpenAI from "openai";
-
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 8;
 const buckets = new Map<string, { count: number; resetAt: number }>();
@@ -35,6 +32,23 @@ type AssistantPayload = {
   };
 };
 
+type ResponsesApiResult = {
+  output_text?: string;
+  output?: Array<{
+    type?: string;
+    content?: Array<{ type?: string; text?: string }>;
+  }>;
+};
+
+function extractOutputText(data: ResponsesApiResult): string {
+  if (data.output_text) return data.output_text;
+  return (data.output ?? [])
+    .flatMap((item) => item.content ?? [])
+    .map((item) => item.text ?? "")
+    .filter(Boolean)
+    .join("\n");
+}
+
 export default async function handler(request: Request): Promise<Response> {
   if (request.method !== "POST") {
     return Response.json({ error: "Method not allowed" }, { status: 405 });
@@ -48,7 +62,8 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
     return Response.json({ error: "AI service not configured" }, { status: 503 });
   }
 
@@ -71,31 +86,49 @@ export default async function handler(request: Request): Promise<Response> {
       : "",
   ].filter(Boolean).join("\n");
 
+  const payload = {
+    model: "gpt-6-luna",
+    tools: [{ type: "web_search" }],
+    input: [
+      {
+        role: "system",
+        content:
+          "Eres un concierge de viaje en Japón integrado en una app privada para dos estudiantes colombianos. " +
+          "Responde en español, de forma breve y operativa. Usa búsqueda web para datos cambiantes como eventos, horarios, cierres, clima operativo, transporte y noticias locales. " +
+          "Prioriza fuentes oficiales y distingue claramente datos confirmados de sugerencias. No inventes horarios. " +
+          "Cuando recomiendes un lugar, explica por qué encaja, cuánto desvío implica y si requiere reserva. " +
+          "Ten especial sensibilidad por anime, manga, Nintendo, Pokémon, Ghibli, Evangelion, One Piece, ingeniería, ciencia, arquitectura, paisajes y joyas poco turísticas. " +
+          "Si la consulta depende de una fecha futura todavía no publicada, dilo explícitamente y da el mejor plan de verificación.",
+      },
+      {
+        role: "user",
+        content: `Viajero: ${body.traveler ?? "Yulian/Daniel"}\n${itineraryContext}\n\nConsulta: ${question}`,
+      },
+    ],
+  };
+
   try {
-    const response = await client.responses.create({
-      model: "gpt-6-luna",
-      tools: [{ type: "web_search" }],
-      input: [
-        {
-          role: "system",
-          content:
-            "Eres un concierge de viaje en Japón integrado en una app privada para dos estudiantes colombianos. " +
-            "Responde en español, de forma breve y operativa. Usa búsqueda web para datos cambiantes como eventos, horarios, cierres, clima operativo, transporte y noticias locales. " +
-            "Prioriza fuentes oficiales y distingue claramente datos confirmados de sugerencias. No inventes horarios. " +
-            "Cuando recomiendes un lugar, explica por qué encaja, cuánto desvío implica y si requiere reserva. " +
-            "Ten especial sensibilidad por anime, manga, Nintendo, Pokémon, Ghibli, Evangelion, One Piece, ingeniería, ciencia, arquitectura, paisajes y joyas poco turísticas. " +
-            "Si la consulta depende de una fecha futura todavía no publicada, dilo explícitamente y da el mejor plan de verificación.",
-        },
-        {
-          role: "user",
-          content:
-            `Viajero: ${body.traveler ?? "Yulian/Daniel"}\n${itineraryContext}\n\nConsulta: ${question}`,
-        },
-      ],
+    const openAiResponse = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
+    const data = (await openAiResponse.json()) as ResponsesApiResult & { error?: { message?: string } };
+
+    if (!openAiResponse.ok) {
+      console.error("openai_error", openAiResponse.status, data.error?.message);
+      return Response.json(
+        { error: "El concierge no pudo responder. Revisa la configuración o inténtalo luego." },
+        { status: 502 },
+      );
+    }
+
     return Response.json({
-      answer: response.output_text,
+      answer: extractOutputText(data) || "No recibí texto utilizable del modelo.",
       model: "gpt-6-luna",
       searchedWeb: true,
     });

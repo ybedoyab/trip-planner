@@ -84,7 +84,7 @@ export function TravelMap({ days, onOpenDay }: Props) {
 
         {visibleGroups.map((group) => (
           <CircleMarker key={group.id} center={group.center} radius={group.layer === "lodging" ? 12 : 8}
-            pathOptions={{ color: colors[group.layer], weight: 3, fillOpacity: .65, className: `map-pin-${group.layer}` }}>
+            className={`map-pin-${group.layer}`} pathOptions={{ color: colors[group.layer], weight: 3, fillOpacity: .65 }}>
             <Popup><strong>{group.title}</strong>
               {group.approximate && <p>Marcador de referencia. Consulta cada ubicación en su enlace.</p>}
               {group.places.map((place) => <p key={place.id}>

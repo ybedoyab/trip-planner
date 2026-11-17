@@ -21,9 +21,9 @@ const colors: Record<MapLayer, string> = { photos: "#63d2a4", dining: "#fa9d69",
 function FitBounds({ points }: { points: Array<[number, number]> }) {
   const map = useMap();
   useEffect(() => {
-    if (points.length === 1) map.setView(points[0], 13);
+    if (points.length === 1) map.setView(points[0], 13, { animate: false });
     if (points.length > 1) {
-      map.fitBounds(points as LatLngBoundsExpression, { padding: [28, 28], maxZoom: 11 });
+      map.fitBounds(points as LatLngBoundsExpression, { padding: [28, 28], maxZoom: 11, animate: false });
     }
   }, [map, points]);
   return null;
@@ -56,7 +56,7 @@ export function TravelMap({ days, onOpenDay }: Props) {
         </button>)}
       </div>
 
-      <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom className="map-canvas">
+      <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom zoomAnimation={false} className="map-canvas">
         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <FitBounds points={activePoints} />

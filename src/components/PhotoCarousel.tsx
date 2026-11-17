@@ -27,7 +27,9 @@ export function PhotoCarousel({ images, children }: PropsWithChildren<{ images: 
       {children}
       {current && <small>{current.title} · {current.sourceUrl
         ? <a href={current.sourceUrl} target="_blank" rel="noreferrer">{current.credit}</a>
-        : current.credit}</small>}
+        : current.credit}
+        {current.mapsUrl && <> · <a href={current.mapsUrl} target="_blank" rel="noreferrer">Mapa y reseñas</a></>}
+      </small>}
     </div>
   </section>;
 }

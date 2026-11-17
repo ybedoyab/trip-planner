@@ -14,7 +14,7 @@ function Suggestion({ item }: { item: DiscoveryItem }) {
     <p>{item.description}</p>
     {item.priceHint && <p>{item.priceHint}</p>}
     <div className="journey-actions">
-      {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer">Abrir Maps</a>}
+      {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer">Mapa y reseñas</a>}
       {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noreferrer">Fuente</a>}
     </div>
   </>;

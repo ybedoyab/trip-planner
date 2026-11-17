@@ -7,6 +7,7 @@ export interface Coordinates {
 }
 
 export interface GalleryImage {
+  mapsUrl?: string;
   url: string;
   alt: string;
   title: string;

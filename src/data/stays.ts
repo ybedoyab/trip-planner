@@ -15,7 +15,8 @@ export const stays = [
     "Kyoto Station · Hachijō",
     "15:45–17:00 objetivo para llegar desde KIX. El 14, salir del hotel hacia Kyoto Station a las 07:30 si el evento de Osaka es por la mañana.",
     "ibis Styles Kyoto Station",
-    "Piece Hostel Kyoto"
+    "Piece Hostel Kyoto",
+    "Miyako Hotel Kyoto Hachijo"
   ],
   [
     "2026-12-14",
@@ -87,7 +88,8 @@ export const stays = [
     "Ueno / Okachimachi",
     "Después de Haneda, avisar si llegarán tarde. El 27, salir a las 07:15 hacia Tokyo Station y dejar margen para llegar a los andenes Keiyō. El 28, salir a las 07:00 hacia Busta Shinjuku. El 1, salir hacia Ueno o Tokyo Station a las 07:30 según el tren reservado.",
     "Hotel Sardonyx Ueno",
-    "Airbnb en Okachimachi"
+    "Airbnb en Okachimachi",
+    "Sotetsu Fresa Inn Ueno-Okachimachi"
   ],
   [
     "2027-01-01",
@@ -114,6 +116,14 @@ export const stays = [
     "JR Sapporo Station",
     "Dejar maletas al llegar antes de ir a Bankei. Confirmar la hora del vuelo del 5 antes de fijar salida del hotel o contar con Teine.",
     "JR Inn Sapporo",
-    "Hotel Gracery Sapporo"
+    "Hotel Gracery Sapporo",
+    "JR Tower Hotel Nikko Sapporo"
   ]
 ] as const;
+import { itinerary } from "./itinerary";
+
+export function stayBudget(start: string, end: string) {
+  const nights = itinerary.filter((day) => day.date >= start && day.date < end);
+  const total = nights.reduce((sum, day) => sum + (day.hotel?.budgetJpyRoom ?? 0), 0);
+  return { total, nightly: nights.length ? Math.round(total / nights.length) : 0 };
+}

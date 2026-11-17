@@ -24,8 +24,7 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v4
       - run: npm ci
-      - run: npm run build
-      - run: npx cap sync android
+      - run: npm run android:sync
       - run: bash gradlew assembleRelease
         working-directory: android
       - name: Sign and verify APK
@@ -61,4 +60,4 @@ jobs:
           arch: x86_64
           target: google_apis
           disable-animations: true
-          script: python3 android/qa/offline_smoke.py
+          script: adb shell pm disable-user --user 0 com.google.android.googlesdksetup && python3 android/qa/offline_smoke.py

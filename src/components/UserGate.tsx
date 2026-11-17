@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { categories, type Category } from "../data/discovery";
 import { useTravel } from "../state/TravelProvider";
+import { InstallApp } from "./InstallApp";
 
 export function UserGate() {
   const { traveler, selectTraveler, clearTraveler, finishOnboarding } = useTravel();
@@ -33,6 +34,7 @@ export function UserGate() {
           <button onClick={() => setReady(true)}>Continuar</button>
           <button onClick={clearTraveler}>Cambiar viajero</button>
         </>}
+        <InstallApp />
       </div>
     </div>
   );

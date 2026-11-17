@@ -584,3 +584,11 @@ button.calendar-cell { cursor: pointer; }
 .map-place { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .map-place label { min-width: 0; min-height: 44px; display: flex; align-items: center; gap: .6rem; overflow-wrap: anywhere; cursor: pointer; }
 .map-place a { color: var(--gold); padding-block: .6rem; }
+.install-trigger { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; padding: .45rem .7rem; color: inherit; border: 1px solid var(--line); border-radius: .7rem; background: var(--panel-2); cursor: pointer; }
+.install-dialog { box-sizing: border-box; max-width: min(30rem, calc(100vw - 2rem)); max-height: 85dvh; padding: 1.3rem; border: 1px solid var(--line); border-radius: 1rem; background: #14222d; color: #fff; }
+.install-dialog::backdrop { background: #080e17cb; }
+.install-dialog h2 { margin-top: 0; }
+.install-dialog li { margin-block: .6rem; }
+.install-dialog button { min-height: 44px; padding-inline: 1rem; border: 1px solid var(--line); border-radius: .55rem; background: #243746; color: #fff; }
+.user-card > .install-app { margin-top: .75rem; }
+.map-canvas.map-offline { background: #14222d; }

@@ -5,3 +5,7 @@ dist
 !.env.example
 .DS_Store
 .vercel
+*.p12
+*.jks
+*.keystore
+*.apk

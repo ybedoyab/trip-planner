@@ -10,10 +10,10 @@ export const heroPhotos: Record<string, GalleryImage[]> = {
   }],
   "2026-12-11": [
     {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Nishiki_Ichiba_by_matsuyuki.jpg/960px-Nishiki_Ichiba_by_matsuyuki.jpg",
+      "url": "/photos/nishiki-market.jpg",
       "title": "Nishiki Market",
       "alt": "Nishiki Market",
-      "credit": "Wikimedia Commons",
+      "credit": "matsuyuki · CC BY-SA 2.0",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nishiki_Ichiba_by_matsuyuki.jpg"
     }
   ],
@@ -37,28 +37,28 @@ export const heroPhotos: Record<string, GalleryImage[]> = {
   ],
   "2026-12-16": [
     {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Genbaku_Dome04-r.JPG/1280px-Genbaku_Dome04-r.JPG",
+      "url": "/photos/hiroshima-peace-memorial.jpg",
       "title": "Hiroshima Peace Memorial",
       "alt": "Hiroshima Peace Memorial",
-      "credit": "Wikimedia Commons",
+      "credit": "Oilstreet · CC BY-SA 3.0",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Genbaku_Dome04-r.JPG"
     }
   ],
   "2026-12-24": [
     {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/All_haneda.jpg/1280px-All_haneda.jpg",
+      "url": "/photos/haneda-airport.jpg",
       "title": "Haneda Airport",
       "alt": "Haneda Airport",
-      "credit": "Wikimedia Commons",
+      "credit": "ブルーノ・プラス · CC BY 4.0",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:All_haneda.jpg"
     }
   ],
   "2026-12-25": [
     {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Shibuya_Crossing%2C_Aerial.jpg/1280px-Shibuya_Crossing%2C_Aerial.jpg",
+      "url": "/photos/shibuya-crossing.jpg",
       "title": "Shibuya Crossing",
       "alt": "Shibuya Crossing",
-      "credit": "Wikimedia Commons",
+      "credit": "David Kernan · CC BY 4.0",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shibuya_Crossing%2C_Aerial.jpg"
     }
   ],

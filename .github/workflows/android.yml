@@ -1,0 +1,63 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [native-android]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - run: npm run android:sync
+      - run: bash gradlew assembleRelease
+        working-directory: android
+      - name: Sign and verify APK
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -eu
+          test -n "$ANDROID_KEYSTORE"
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          key="$RUNNER_TEMP/japan-trip.p12"
+          trap 'rm -f "$key"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE" | base64 --decode > "$key"
+          build_tools=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+          "$build_tools/zipalign" -f -p 4 android/app/build/outputs/apk/release/app-release-unsigned.apk "$RUNNER_TEMP/aligned.apk"
+          "$build_tools/apksigner" sign --ks "$key" --ks-key-alias japan-trip --ks-pass env:ANDROID_KEYSTORE_PASSWORD --out japon-2026.apk "$RUNNER_TEMP/aligned.apk"
+          "$build_tools/apksigner" verify japon-2026.apk
+      - name: Save signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: japon-2026
+          path: japon-2026.apk
+          if-no-files-found: error
+      - name: Enable Android emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Open APK in airplane mode
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          script: adb shell pm disable-user --user 0 com.google.android.googlesdksetup && python3 android/qa/offline_smoke.py

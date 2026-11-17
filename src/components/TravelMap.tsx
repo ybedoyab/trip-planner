@@ -1,7 +1,8 @@
 import "leaflet/dist/leaflet.css";
 import { ExternalLink, Plane, Route as RouteIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { CircleMarker, MapContainer, Popup, Polyline, TileLayer, useMap } from "react-leaflet";
+import { CircleMarker, GeoJSON, MapContainer, Pane, Popup, Polyline, TileLayer, useMap } from "react-leaflet";
+import type { GeoJsonObject } from "geojson";
 import type { LatLngBoundsExpression } from "leaflet";
 import type { DayPlan } from "../types/travel";
 import { formatDateLabel } from "../lib/format";
@@ -27,6 +28,19 @@ function FitBounds({ points }: { points: Array<[number, number]> }) {
     }
   }, [map, points]);
   return null;
+}
+
+function OfflineOverview() {
+  const [data, setData] = useState<GeoJsonObject | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/maps/world-overview.geojson", { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then(setData)
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+  return data && <GeoJSON data={data} interactive={false} style={{ color: "#637c88", weight: 1, fillColor: "#334e51", fillOpacity: .75 }} />;
 }
 
 export function TravelMap({ days, onOpenDay }: Props) {
@@ -66,10 +80,11 @@ export function TravelMap({ days, onOpenDay }: Props) {
         </button>)}
       </div>
 
-      {!online && <p className="operation-note">Sin conexión. Puedes consultar la ruta, los puntos y la lista de vuelos. El fondo de calles y los enlaces externos necesitan internet.</p>}
+      {!online && <p className="operation-note">Sin conexión. Mapa general de Natural Earth con ruta, puntos y vuelos. Para ver calles en detalle, conecta a internet.</p>}
       <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom zoomAnimation={false} className={online ? "map-canvas" : "map-canvas map-offline"}>
         {online && <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />}
+        {!online && <Pane name="offline-basemap" style={{ zIndex: 250 }}><OfflineOverview /></Pane>}
         <FitBounds points={activePoints} />
 
         {mode === "japan" && <>

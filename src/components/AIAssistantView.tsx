@@ -1,4 +1,5 @@
 import { Bot, LoaderCircle, Search, Sparkles } from "lucide-react";
+import { Capacitor, CapacitorHttp } from "@capacitor/core";
 import { useMemo, useState } from "react";
 import { discoveries } from "../data/discovery";
 import { useTravel } from "../state/TravelProvider";
@@ -35,19 +36,32 @@ export function AIAssistantView({ day }: Props) {
       .slice(0, 15).map((item) => item.dayId + " · " + item.title);
 
     try {
+      const body = {
+        question: clean,
+        traveler,
+        preferences: progress?.preferences,
+        saved,
+        day: {
+          date: day.date, city: day.city, region: day.region, title: day.title, summary: day.summary,
+          activities: day.activities.map(({ title, time }) => ({ title, time })),
+        },
+      };
+      if (Capacitor.isNativePlatform()) {
+        const response = await CapacitorHttp.post({
+          url: "https://trip-planner-green-seven.vercel.app/api/assistant",
+          headers: { "Content-Type": "application/json" },
+          data: body,
+          connectTimeout: 10000,
+          readTimeout: 60000,
+        });
+        if (response.status >= 400) throw new Error(response.data?.error ?? "No se pudo consultar al concierge.");
+        setAnswer(response.data?.answer || "No recibí una respuesta.");
+        return;
+      }
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question: clean,
-          traveler,
-          preferences: progress?.preferences,
-          saved,
-          day: {
-            date: day.date, city: day.city, region: day.region, title: day.title, summary: day.summary,
-            activities: day.activities.map(({ title, time }) => ({ title, time })),
-          },
-        }),
+        body: JSON.stringify(body),
       });
 
       const raw = await response.text();

@@ -1,4 +1,5 @@
 import { Download } from "lucide-react";
+import { Capacitor } from "@capacitor/core";
 import { useEffect, useRef, useState } from "react";
 
 interface InstallPrompt extends Event {
@@ -19,11 +20,12 @@ function isInstalled() {
 
 export function InstallApp() {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [installed, setInstalled] = useState(isInstalled);
-  const [offlineReady, setOfflineReady] = useState(Boolean(navigator.serviceWorker?.controller));
+  const nativeApp = Capacitor.isNativePlatform();
+  const [installed, setInstalled] = useState(() => nativeApp || isInstalled());
+  const [offlineReady, setOfflineReady] = useState(() => nativeApp || Boolean(navigator.serviceWorker?.controller));
 
   useEffect(() => {
-    const update = () => setOfflineReady(Boolean(navigator.serviceWorker?.controller));
+    const update = () => setOfflineReady(nativeApp || Boolean(navigator.serviceWorker?.controller));
     const complete = () => { setInstalled(true); dialog.current?.close(); };
     navigator.serviceWorker?.addEventListener("controllerchange", update);
     window.addEventListener("appinstalled", complete);
@@ -32,7 +34,7 @@ export function InstallApp() {
       navigator.serviceWorker?.removeEventListener("controllerchange", update);
       window.removeEventListener("appinstalled", complete);
     };
-  }, []);
+  }, [nativeApp]);
 
   async function install() {
     const prompt = installPrompt;
@@ -54,6 +56,7 @@ export function InstallApp() {
     </button>
     <dialog ref={dialog} className="install-dialog" aria-label="Instalar Japón 2026">
       <h2>{installed ? "Uso sin conexión" : "Instala Japón 2026"}</h2>
+      {!nativeApp && <p><a className="android-download" href="https://github.com/ybedoyab/trip-planner/releases/download/android/japon-2026.apk">Descargar APK para Android</a></p>}
       {!installed && <ul>
         <li><strong>iPhone</strong> · En Safari, toca Compartir → Añadir a pantalla de inicio → Añadir. Activa «Abrir como app web» si aparece.</li>
         <li><strong>Android</strong> · En Chrome, abre el menú ⋮ → Instalar aplicación o Añadir a pantalla de inicio.</li>
@@ -61,7 +64,8 @@ export function InstallApp() {
       <p role="status">{offlineReady
         ? "El itinerario y los datos básicos para el viaje ya están disponibles sin conexión."
         : "Abre la app con conexión y espera a que termine de guardar los datos del viaje."}</p>
-      <p>Abre el icono con conexión una vez antes del viaje. El mapa de calles, las fotos externas, la IA y las páginas externas requieren conexión.</p>
+      {!nativeApp && <p>Si instalas la versión web, ábrela con conexión una vez antes del viaje.</p>}
+      <p>La IA, las fotos externas y las páginas de reservas requieren internet.</p>
       <form method="dialog"><button type="submit">Cerrar</button></form>
     </dialog>
   </div>;

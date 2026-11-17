@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Japón 2026</string>
+    <string name="title_activity_main">Japón 2026</string>
+    <string name="package_name">com.ybedoyab.japantrip</string>
+    <string name="custom_url_scheme">com.ybedoyab.japantrip</string>
+</resources>

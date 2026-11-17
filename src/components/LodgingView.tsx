@@ -1,15 +1,18 @@
-import { stays } from "../data/stays";
+import { stayBudget, stays } from "../data/stays";
+import { formatJpy } from "../lib/format";
 import { useTravel } from "../state/TravelProvider";
 
 const details: Record<string, { url: string; hours: string; direct?: boolean }> = {
   "ibis Styles Kyoto Station": { url: "https://all.accor.com/hotel/9418/index.en.shtml", hours: "Entrada desde las 14:00 · salida hasta las 11:00." },
   "Piece Hostel Kyoto": { url: "https://piecehotel.com/hotels/piecehostelkyoto", hours: "Entrada 16:00–23:00 · salida hasta las 11:00. Habitación privada según disponibilidad. Avisar si llegan después de las 23:00." },
+  "Miyako Hotel Kyoto Hachijo": { url: "https://partners-pamph.jnto.go.jp/simg/pamph/2251.pdf", hours: "Frente a Kyoto Station. El horario de entrada y salida puede cambiar según el plan de tarifa." },
   "Airbnb cerca de Daikokuchō": { url: "https://www.airbnb.com/rooms/36128728", hours: "Entrada autónoma con caja de llaves. Confirmar hora y equipaje con el anfitrión.", direct: true },
   "Tokyu Stay Hakata": { url: "https://www.tokyustay.co.jp/en/hotel/hakata-fukuoka/", hours: "Consultar condiciones de entrada, salida y lavadora según habitación." },
   "Hotel Granvia Hiroshima": { url: "https://www.hgh.co.jp/english/index.html", hours: "Entrada desde las 14:00 · salida hasta las 12:00. Conectado directamente a JR Hiroshima." },
   "Fairfield by Marriott Kumamoto Aso": { url: "https://www.marriott.com/en-us/hotels/kmjfi-fairfield-kumamoto-aso/overview/", hours: "Entrada desde las 15:00 · salida hasta las 11:00." },
   "Hotel Sardonyx Ueno": { url: "https://www.hotel-sardonyx.com/ueno/en/faq/", hours: "El hotel publica consigna antes de la entrada y después de la salida. Consultar horarios y tipo de cama." },
   "Airbnb en Okachimachi": { url: "https://www.airbnb.com/okachimachi-japan/stays", hours: "Buscar alojamiento entero y entrada autónoma. Horarios y consigna dependen del anuncio.", direct: true },
+  "Sotetsu Fresa Inn Ueno-Okachimachi": { url: "https://sotetsu-hotels.com/en/fresa-inn/okachimachi/", hours: "Alternativa cerca de Okachimachi. Comprueben si eligieron habitación doble o dos camas." },
   "JR Inn Sapporo": { url: "https://www.jr-inn.jp/sapporo/qa_en/", hours: "Entrada desde las 15:00 · salida hasta las 10:00. Pueden dejar maletas antes de la entrada; avisar si llegan después de medianoche." },
 };
 
@@ -27,6 +30,7 @@ export function LodgingView() {
       <span className="eyebrow">{labelDate(start)} → {labelDate(end)} · entrada y salida</span>
       <h3>{city}</h3>
       <p><strong>Base</strong> {station}</p>
+      <p><strong>Presupuesto para dos</strong> {formatJpy(stayBudget(start, end).nightly)} por noche en promedio · {formatJpy(stayBudget(start, end).total)} por estancia. Referencia del itinerario, sujeta a tarifa, impuestos y cargos de la plataforma.</p>
       <p>{schedule}</p>
       {options.map((name) => {
         const info = details[name];

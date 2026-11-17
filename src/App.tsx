@@ -60,15 +60,15 @@ export default function App() {
               <div>
                 <span className="eyebrow">Mapa interactivo</span>
                 <h1>Rutas y puntos fotográficos</h1>
-                <p>Cambia entre Japón, vuelos internacionales y photo spots. Beijing (PEK) aparece explícitamente en la ruta aérea.</p>
+                <p>Explora la ruta de Japón o los vuelos y activa las capas de fotos, restaurantes y alojamientos.</p>
               </div>
             </header>
             <div className="map-layout">
               <Suspense fallback={<p>Cargando mapa…</p>}><TravelMap days={itinerary} onOpenDay={openDay} /></Suspense>
               <aside className="map-aside">
                 <span className="eyebrow">Ruta maestra</span>
-                <h2>Japón + ruta aérea + fotos</h2>
-                <p>Usa las pestañas del mapa. La capa Vuelos muestra MDE → BOG → MAD → PEK → KIX; Fotos incluye enlaces directos para navegación.</p>
+                <h2>Elige qué ver</h2>
+                <p>Activa una capa y abre su lista para elegir lugares. Los restaurantes y alojamientos se agrupan por zona de referencia. Sus enlaces abren la ubicación en Maps.</p>
               </aside>
             </div>
           </>

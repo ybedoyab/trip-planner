@@ -22,6 +22,7 @@ export function InstallApp() {
   const dialog = useRef<HTMLDialogElement>(null);
   const nativeApp = Capacitor.isNativePlatform();
   const [installed, setInstalled] = useState(() => nativeApp || isInstalled());
+  const [webPromptAvailable, setWebPromptAvailable] = useState(false);
   const [offlineReady, setOfflineReady] = useState(() => nativeApp || Boolean(navigator.serviceWorker?.controller));
 
   useEffect(() => {
@@ -36,27 +37,32 @@ export function InstallApp() {
     };
   }, [nativeApp]);
 
-  async function install() {
-    const prompt = installPrompt;
-    if (prompt && !installed) {
-      installPrompt = null;
-      try {
-        const choice = await prompt.prompt();
-        if (choice.outcome === "accepted") return;
-      } catch {
-        // Show the browser-specific instructions if its prompt is unavailable.
-      }
-    }
+  function openInstallOptions() {
+    setWebPromptAvailable(Boolean(installPrompt));
     dialog.current?.showModal();
   }
 
+  async function installWeb() {
+    const prompt = installPrompt;
+    if (prompt && !installed) {
+      installPrompt = null;
+      setWebPromptAvailable(false);
+      try {
+        await prompt.prompt();
+      } catch {
+        // The dialog already shows the browser's manual installation steps.
+      }
+    }
+  }
+
   return <div className="install-app">
-    <button className="install-trigger" type="button" onClick={install}>
+    <button className="install-trigger" type="button" onClick={openInstallOptions}>
       <Download size={16} aria-hidden="true" /> {installed ? "Uso sin conexión" : "Instalar app"}
     </button>
     <dialog ref={dialog} className="install-dialog" aria-label="Instalar Japón 2026">
       <h2>{installed ? "Uso sin conexión" : "Instala Japón 2026"}</h2>
       {!nativeApp && <p><a className="android-download" href="https://github.com/ybedoyab/trip-planner/releases/download/android/japon-2026.apk">Descargar APK para Android</a></p>}
+      {webPromptAvailable && !installed && <button type="button" onClick={installWeb}>Instalar versión web</button>}
       {!installed && <ul>
         <li><strong>iPhone</strong> · En Safari, toca Compartir → Añadir a pantalla de inicio → Añadir. Activa «Abrir como app web» si aparece.</li>
         <li><strong>Android</strong> · En Chrome, abre el menú ⋮ → Instalar aplicación o Añadir a pantalla de inicio.</li>

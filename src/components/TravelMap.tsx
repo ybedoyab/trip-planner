@@ -49,6 +49,8 @@ export function TravelMap({ days, onOpenDay }: Props) {
   const [mode, setMode] = useState<MapMode>("japan");
   const [online, setOnline] = useState(navigator.onLine);
   const [streetsReady, setStreetsReady] = useState(false);
+  const nativeApp = Capacitor.isNativePlatform();
+  const useLocalMap = nativeApp || !online;
   useEffect(() => {
     const update = () => setOnline(navigator.onLine);
     window.addEventListener("online", update);
@@ -83,14 +85,14 @@ export function TravelMap({ days, onOpenDay }: Props) {
         </button>)}
       </div>
 
-      {!online && <p className="operation-note">{streetsReady
-        ? "Sin conexión. Calles descargadas alrededor de los destinos. Acércate a una zona para ver el detalle."
-        : "Sin conexión. Mapa general de Natural Earth con ruta, puntos y vuelos."}</p>}
-      <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom zoomAnimation={false} className={online ? "map-canvas" : "map-canvas map-offline"}>
-        {online && <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      {useLocalMap && <p className="operation-note">{streetsReady
+        ? "Calles descargadas alrededor de los destinos. Acércate a una zona para ver el detalle."
+        : "Mapa general de Natural Earth con ruta, puntos y vuelos."}</p>}
+      <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom zoomAnimation={false} className={useLocalMap ? "map-canvas map-offline" : "map-canvas"}>
+        {!useLocalMap && <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />}
-        {!online && <Pane name="offline-basemap" style={{ zIndex: 250 }}><OfflineOverview /></Pane>}
-        {!online && Capacitor.isNativePlatform() && <Pane name="offline-streets" style={{ zIndex: 300 }}>
+        {useLocalMap && <Pane name="offline-basemap" style={{ zIndex: 250 }}><OfflineOverview /></Pane>}
+        {nativeApp && <Pane name="offline-streets" style={{ zIndex: 300 }}>
           <OfflineStreets onReady={setStreetsReady} />
         </Pane>}
         <FitBounds points={activePoints} />

@@ -8,6 +8,8 @@ import { ReservationsView } from "./components/ReservationsView";
 import { DiscoveryView } from "./components/DiscoveryView";
 import { UserGate } from "./components/UserGate";
 import { itinerary } from "./data/itinerary";
+import { categories, type Category } from "./data/discovery";
+import { formatDateLabel } from "./lib/format";
 import { useTravel } from "./state/TravelProvider";
 import type { Section } from "./types/travel";
 
@@ -18,7 +20,11 @@ const TravelMap = lazy(() => import("./components/TravelMap").then(({ TravelMap 
 export default function App() {
   const { state, traveler } = useTravel();
   const [section, setSection] = useState<Section>("today");
-  const [selectedDayId, setSelectedDayId] = useState(itinerary[0].id);
+  const [selectedDayId, setSelectedDayId] = useState(() => {
+    const today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    return itinerary.find((day) => day.date === today)?.id ?? itinerary[0].id;
+  });
+  const [interest, setInterest] = useState<Category | "">("");
 
   const selectedIndex = useMemo(
     () => Math.max(0, itinerary.findIndex((day) => day.id === selectedDayId)),
@@ -34,6 +40,7 @@ export default function App() {
   };
 
   const changeSection = (next: Section) => {
+    if (next === "explore") setInterest("");
     setSection(next);
     window.scrollTo(0, 0);
   };
@@ -42,7 +49,7 @@ export default function App() {
     switch (section) {
       case "explore":
       case "saved":
-        return <DiscoveryView day={itinerary[selectedIndex]} saved={section === "saved"}
+        return <DiscoveryView day={itinerary[selectedIndex]} saved={section === "saved"} initialCategory={interest}
           onSelectDay={setSelectedDayId} onOpenSaved={() => changeSection("saved")} />;
       case "more":
         return <section className="journey"><h1>Más del viaje</h1><div className="journey-actions">
@@ -80,7 +87,22 @@ export default function App() {
       case "reservations":
         return <ReservationsView />;
       default:
-        return (
+        return (<>
+          <section className="today-interests journey" aria-labelledby="today-interests-title">
+            <span className="eyebrow">Explora el viaje</span>
+            <h2 id="today-interests-title">¿Qué te interesa hoy?</h2>
+            <label>Día del viaje
+              <select value={selectedDayId} onChange={(event) => setSelectedDayId(event.target.value)}>
+                {itinerary.map((day) => <option key={day.id} value={day.id}>{formatDateLabel(day.date)} · {day.city}</option>)}
+              </select>
+            </label>
+            <div className="today-interest-options">
+              {categories.map((category) => <button key={category} onClick={() => {
+                changeSection("explore");
+                setInterest(category);
+              }}>{category}</button>)}
+            </div>
+          </section>
           <DayView
             day={itinerary[selectedIndex]}
             onExplore={() => changeSection("explore")}
@@ -91,6 +113,7 @@ export default function App() {
                 : undefined
             }
           />
+          </>
         );
     }
   })();

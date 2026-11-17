@@ -592,3 +592,8 @@ button.calendar-cell { cursor: pointer; }
 .install-dialog button { min-height: 44px; padding-inline: 1rem; border: 1px solid var(--line); border-radius: .55rem; background: #243746; color: #fff; }
 .user-card > .install-app { margin-top: .75rem; }
 .map-canvas.map-offline { background: #14222d; }
+.today-interests { margin-bottom: 1.5rem; padding: clamp(1rem, 4vw, 2rem); border-radius: 1.4rem; border: 1px solid var(--line); background: linear-gradient(145deg, #254440, #14212d 72%); }
+.today-interests h2 { font-family: Georgia, serif; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; margin: .5rem 0 1rem; }
+.today-interests label, .discovery label { display: grid; gap: .35rem; margin-bottom: .7rem; }
+.today-interests select { width: min(100%, 23rem); }
+.today-interest-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: .55rem; }

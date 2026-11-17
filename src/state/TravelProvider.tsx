@@ -5,6 +5,7 @@ import type { PersistedTravelState, Traveler } from "../types/travel";
 import type { Category, Decision } from "../data/discovery";
 
 interface TravelContextValue {
+  selectStay: (date: string, name: string | null) => void;
   finishOnboarding: (preferences: Category[]) => void;
   decide: (id: string, decision: Decision | null) => void;
   undoDecision: () => void;
@@ -45,6 +46,10 @@ export function TravelProvider({ children }: PropsWithChildren) {
   };
 
   const value = useMemo<TravelContextValue>(() => ({
+    selectStay: (date, name) => updateTravelerProgress((progress) => ({
+      ...progress,
+      lodgingChoices: { ...progress.lodgingChoices, [date]: name },
+    })),
     state,
     traveler,
     selectTraveler: (selected) => setState((current) => ({ ...current, currentTraveler: selected })),

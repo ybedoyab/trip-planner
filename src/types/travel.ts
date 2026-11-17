@@ -92,6 +92,7 @@ export interface ReservationItem {
 }
 
 export interface TravelerProgress {
+  lodgingChoices?: Record<string, string | null>;
   preferences?: import("../data/discovery").Category[];
   decisions?: Record<string, import("../data/discovery").Decision | null>;
   lastDecision?: { id: string; previous: import("../data/discovery").Decision | null };

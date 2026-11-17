@@ -572,3 +572,7 @@ button.calendar-cell { cursor: pointer; }
   .mobile-header { margin: 0; padding-inline: 14px; }
   .mobile-header button { min-height: 44px; }
 }
+.lodging-list { max-width: 58rem; }
+.lodging-list .discovery-card h3 { font-size: 1.6rem; margin: .6rem 0; }
+.lodging-option { border-top: 1px solid var(--line); padding-top: .8rem; margin-top: .8rem; }
+.lodging-option h4 { margin: 0; font-size: 1.1rem; }

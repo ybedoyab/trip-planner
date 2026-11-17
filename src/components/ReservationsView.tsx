@@ -1,4 +1,5 @@
 import { Check, ExternalLink } from "lucide-react";
+import { LodgingView } from "./LodgingView";
 import { reservations } from "../data/reservations";
 import { useTravel } from "../state/TravelProvider";
 
@@ -12,11 +13,14 @@ export function ReservationsView() {
       <header className="page-header">
         <div>
           <span className="eyebrow">Antes de viajar</span>
-          <h1>Reservas críticas</h1>
+          <h1>Reservas y hoteles</h1>
           <p>Checklist independiente para {traveler}. Marca solo cuando esté realmente comprado o reservado.</p>
         </div>
       </header>
 
+      <LodgingView />
+
+      <h2>Checklist de reservas</h2>
       <div className="reservation-list">
         {reservations.map((item) => {
           const done = Boolean(progress.completedReservations[item.id]);

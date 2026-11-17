@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Bookmark, RotateCcw, X } from "lucide-react";
-import { categories, discoveries, type Decision, type DiscoveryItem } from "../data/discovery";
+import { categories, discoveries, type Category, type Decision, type DiscoveryItem } from "../data/discovery";
 import { extrasByDay } from "../data/dayExtras";
 import { itinerary } from "../data/itinerary";
 import { useTravel } from "../state/TravelProvider";
@@ -20,17 +20,18 @@ function Suggestion({ item }: { item: DiscoveryItem }) {
   </>;
 }
 
-export function DiscoveryView({ day, saved, onSelectDay, onOpenSaved }: {
-  day: DayPlan; saved: boolean; onSelectDay: (id: string) => void; onOpenSaved: () => void;
+export function DiscoveryView({ day, saved, initialCategory, onSelectDay, onOpenSaved }: {
+  day: DayPlan; saved: boolean; initialCategory: Category | ""; onSelectDay: (id: string) => void; onOpenSaved: () => void;
 }) {
   const { state, traveler, decide, undoDecision } = useTravel();
   const [filter, setFilter] = useState<Decision>("saved");
   const [savedDay, setSavedDay] = useState("");
   const [savedCategory, setSavedCategory] = useState("");
+  const [interest, setInterest] = useState<string>(initialCategory);
   const progress = traveler ? state.progress[traveler] : undefined;
   const decisions = progress?.decisions ?? {};
   const preferences = progress?.preferences ?? [];
-  const remaining = discoveries.filter((item) => item.dayId === day.id && !decisions[item.id])
+  const remaining = discoveries.filter((item) => item.dayId === day.id && !decisions[item.id] && (!interest || item.category === interest))
     .sort((a, b) => Number(preferences.includes(b.category)) - Number(preferences.includes(a.category)));
   const current = remaining[0];
   const swipe = useHorizontalSwipe((direction) => {
@@ -61,6 +62,10 @@ export function DiscoveryView({ day, saved, onSelectDay, onOpenSaved }: {
       </article>)}
     </> : <>
       <label>Día <select value={day.id} onChange={(event) => onSelectDay(event.target.value)}>{dayOptions}</select></label>
+      <label>Interés <select value={interest} onChange={(event) => setInterest(event.target.value)}>
+        <option value="">Todos los intereses</option>
+        {categories.map((category) => <option key={category}>{category}</option>)}
+      </select></label>
       {extrasByDay[day.id]?.note && <p>{extrasByDay[day.id].note}</p>}
       <p role="status">{remaining.length} sugerencias por explorar</p>
       {current ? <>
@@ -69,7 +74,7 @@ export function DiscoveryView({ day, saved, onSelectDay, onOpenSaved }: {
           <button onClick={() => decide(current.id, "dismissed")}><X size={18} /> Descartar</button>
           <button onClick={() => decide(current.id, "saved")}><Bookmark size={18} /> Guardar</button>
         </div>
-      </> : <p>Ya revisaste las sugerencias de este día. Elige otro día o vuelve a tus guardados.</p>}
+      </> : <p>{interest ? "No quedan sugerencias para este interés. Prueba otro interés o cambia de día." : "Ya revisaste las sugerencias de este día. Elige otro día o vuelve a tus guardados."}</p>}
       <div className="journey-actions">
         <button disabled={!progress?.lastDecision} onClick={undoDecision}><RotateCcw size={16} /> Deshacer</button>
         <button onClick={onOpenSaved}>Ver guardados</button>

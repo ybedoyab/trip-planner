@@ -1,6 +1,7 @@
 import { Check, Clock3, ExternalLink, Hotel, Lightbulb, MapPin, ShoppingBag, ShoppingCart, Soup, TrainFront, Utensils } from "lucide-react";
 import { galleriesByDay } from "../data/galleries";
 import { heroPhotos } from "../data/heroPhotos";
+import { extraHeroPhotos } from "../data/extraHeroPhotos";
 import { extrasByDay } from "../data/dayExtras";
 import { specialStopsByDay } from "../data/specialStops";
 import { estimateCop, formatDateLabel, formatJpy } from "../lib/format";
@@ -27,7 +28,11 @@ export function DayView({ day, nextDay, onNext, onExplore }: Props) {
   const percent = Math.round((completed / Math.max(activities.length, 1)) * 100);
   const transportBudget = day.transport.reduce((sum, item) => sum + (item.costJpy ?? 0), 0);
   const extra = extrasByDay[day.id];
-  const gallery = heroPhotos[day.id] ?? [...(extra?.gallery ?? []), ...(galleriesByDay[day.id] ?? [])];
+  const gallery = [
+    ...(heroPhotos[day.id] ?? []),
+    ...(extraHeroPhotos[day.id] ?? []),
+    ...(heroPhotos[day.id] ? [] : [...(extra?.gallery ?? []), ...(galleriesByDay[day.id] ?? [])]),
+  ];
 
   return (
     <>
@@ -152,7 +157,7 @@ export function DayView({ day, nextDay, onNext, onExplore }: Props) {
                   <div className="suggestion-item" key={item.title}>
                     <div><strong>{item.title}</strong>{item.priceHint && <span className="price-hint">{item.priceHint}</span>}</div>
                     <p>{item.description}</p>
-                    {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={12} /> Maps</a>}
+                    {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={12} /> Mapa y reseñas</a>}
                   </div>
                 ))}
               </div>
@@ -166,7 +171,7 @@ export function DayView({ day, nextDay, onNext, onExplore }: Props) {
                     <div><strong>{item.title}</strong>{item.priceHint && <span className="price-hint">{item.priceHint}</span>}</div>
                     <p>{item.description}</p>
                     <div className="suggestion-actions">
-                      {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={12} /> Abrir en Maps</a>}
+                      {item.mapsUrl && <a href={item.mapsUrl} target="_blank" rel="noreferrer"><MapPin size={12} /> Mapa y reseñas</a>}
                       {item.sourceUrl && <a href={item.sourceUrl} target="_blank" rel="noreferrer"><ExternalLink size={12} /> Fuente</a>}
                     </div>
                   </div>

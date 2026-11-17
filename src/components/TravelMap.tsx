@@ -31,6 +31,16 @@ function FitBounds({ points }: { points: Array<[number, number]> }) {
 
 export function TravelMap({ days, onOpenDay }: Props) {
   const [mode, setMode] = useState<MapMode>("japan");
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
   const [enabled, setEnabled] = useState<Record<MapLayer, boolean>>({ photos: false, dining: false, lodging: false });
   const [hidden, setHidden] = useState<Record<string, boolean>>({});
   const [focus, setFocus] = useState<Array<[number, number]> | null>(null);
@@ -56,9 +66,10 @@ export function TravelMap({ days, onOpenDay }: Props) {
         </button>)}
       </div>
 
-      <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom zoomAnimation={false} className="map-canvas">
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {!online && <p className="operation-note">Sin conexión. Puedes consultar la ruta, los puntos y la lista de vuelos. El fondo de calles y los enlaces externos necesitan internet.</p>}
+      <MapContainer id="trip-map" center={[36.2, 136.2]} zoom={5} scrollWheelZoom zoomAnimation={false} className={online ? "map-canvas" : "map-canvas map-offline"}>
+        {online && <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />}
         <FitBounds points={activePoints} />
 
         {mode === "japan" && <>

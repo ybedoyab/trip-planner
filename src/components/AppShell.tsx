@@ -2,6 +2,7 @@ import { Bookmark, Compass, Ellipsis, Bot, CalendarDays, CalendarRange, Map, Rec
 import type { PropsWithChildren } from "react";
 import { useTravel } from "../state/TravelProvider";
 import type { Section } from "../types/travel";
+import { InstallApp } from "./InstallApp";
 
 interface Props extends PropsWithChildren {
   section: Section;
@@ -41,10 +42,12 @@ export function AppShell({ section, onSectionChange, children }: Props) {
       <aside className="sidebar">
         <div className="brand">日本 2026<small>YULIAN × DANIEL</small></div>
         {nav()}
+        <InstallApp />
         <button className="traveler-chip" onClick={clearTraveler}>{traveler} <span>Cambiar</span></button>
       </aside>
       <div className="mobile-header">
         <strong>日本 2026</strong>
+        <InstallApp />
         <button onClick={clearTraveler}>{traveler}</button>
       </div>
       <main className="page-transition" key={section}>{children}</main>
